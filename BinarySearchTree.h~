@@ -1,0 +1,17 @@
+#ifndef BINARYSEARCHTREE_H
+#define BINARYSEARCHTREE_H
+
+#include "Dictionary.h"
+
+
+class BinarySearchTree : public Dictionary {
+
+    public:
+          void Insert(int val);
+          bool Delete(int val);
+          bool Search(int val);
+	  void ClearADT();
+          void Display();
+};
+
+#endif
