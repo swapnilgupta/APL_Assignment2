@@ -8,8 +8,6 @@ int data;
 node *left;
 node *right;
 };
-node *tree;
-tree=NULL;
 
 class BinarySearchTree : public Dictionary {
 
