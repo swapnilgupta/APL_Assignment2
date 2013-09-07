@@ -1,61 +1,83 @@
 #include "BinarySearchTree.h"
 #include <iostream>
- struct tree_node
-        {
-           tree_node* left;
-           tree_node* right;
-           int data;
-        };
-        tree_node* root;
+#include<stdio.h>
+#include<stdlib.h>
+node *tree;
+using namespace std;
+void BinarySearchTree :: preorder(node *t){
+    if( t!=NULL){
+        cout<<" "<< t->data;
+        preorder(t->left);
+        preorder(t->right);
+    }
+}
+
+void BinarySearchTree :: inorder(node *t){
+    if( t!=NULL){
+        inorder( t->left);
+        cout<<" "<< t->data;
+        inorder(t->right);
+    }
+}
+
+void BinarySearchTree :: postorder(node *t){
+    if( t!=NULL){
+        postorder( t->left);
+        postorder( t->right);
+        cout<<" "<<t->data;
+    }
+}
 
 void BinarySearchTree::Insert(int val)
 {
-     std::cout << val << "Inside BST::Insert()\n";
- tree_node* t = new tree_node;
-    tree_node* parent;
-    t->data = val;
-    t->left = NULL;
-    t->right = NULL;
-    parent = NULL;
-    
-    // is this a new tree?
-    if(isEmpty()) root = t;
-    else
-    {
-        //Note: ALL insertions are as leaf nodes
-        tree_node* curr;
-        curr = root;
-        // Find the Node's parent
-        while(curr)
-        {
-            parent = curr;
-            if(t->data > curr->data) curr = curr->right;
-            else curr = curr->left;
-        }
 
-        if(t->data < parent->data)
-           parent->left = t;
-        else
-           parent->right = t;
-    }
+		if(tree==NULL)
+               	{
+                    tree=new node;
+                    tree->left=tree->right=NULL;
+                    tree->data=val;
+                   
+               	}
+               	else
+		{
+		node *parent, *curr;
+                curr = tree;
 
+   
+ 		// Find the Node's parent
+
+		while(curr)
+		    {
+	            parent = curr;
+		    if(val > curr->data) curr = curr->right;
+		    else curr = curr->left;
+    		    }
+     node *t;
+     t=new node;
+     t->left=NULL;
+     t->right=NULL;
+
+	if(t->data < parent->data)
+		parent->left = t;
+    	else
+       		parent->right = t;
+		}
 }
 
 bool BinarySearchTree::Delete(int val)
 {
-     std::cout << val << "Inside BST::Delete()\n";
-//Locate the element
-    bool found = false;
-    if(isEmpty())
-    {
-        cout<<" This Tree is empty! "<<endl;
-        return;
-    }
-    tree_node* curr;
-    tree_node* parent;
-    curr = root;
-    while(curr != NULL)
-    {
+     if(tree==NULL)
+	return false;
+     else
+	{
+bool found=false;
+	    //Locate the element
+    	node* curr;
+    	node* parent;
+    	curr = tree;
+    
+    	while(curr != NULL)
+   	{
          if(curr->data == val)
          {
             found = true;
@@ -67,21 +89,20 @@ bool BinarySearchTree::Delete(int val)
              if(val>curr->data) curr = curr->right;
              else curr = curr->left;
          }
-    }
-  if(!found)
-{
-        cout<<" Data not found! "<<endl;
-        return;
-    }
+    	}
+    if(!found)
+        return false; // If the element you want to delete is not present in the tree then it returns 0
+    
 
 
-    // 1. We're removing a leaf node
-    // 2. We're removing a node with a single child
-    // 3. we're removing a node with 2 children
+	// 3 cases :
+
+		// 1. We're removing a leaf node
+	    	// 2. We're removing a node with a single child
+    		// 3. we're removing a node with 2 children
 
     // Node with single child
-    if((curr->left == NULL && curr->right != NULL)|| (curr->left != NULL
-&& curr->right == NULL))
+    if((curr->left == NULL && curr->right != NULL)|| (curr->left != NULL && curr->right == NULL))
     {
        if(curr->left == NULL && curr->right != NULL)
        {
@@ -109,23 +130,27 @@ bool BinarySearchTree::Delete(int val)
              delete curr;
            }
        }
-     return;
+     return true;
     }
+
+
 //We're looking at a leaf node
-if( curr->left == NULL && curr->right == NULL)
-    {
-        if(parent->left == curr) parent->left = NULL;
-        else parent->right = NULL;
-delete curr;
-return;
-    }
+	if( curr->left == NULL && curr->right == NULL)
+	{
+        	if(parent->left == curr) 
+			parent->left = NULL;
+        	else 
+			parent->right = NULL;
+ 		 delete curr;
+ 		 return true;
+    	}
 
 
     //Node with 2 children
     // replace node with smallest value in right subtree
     if (curr->left != NULL && curr->right != NULL)
     {
-        tree_node* chkr;
+        node* chkr;
         chkr = curr->right;
         if((chkr->left == NULL) && (chkr->right == NULL))
         {
@@ -140,8 +165,8 @@ return;
 
             if((curr->right)->left != NULL)
             {
-                tree_node* lcurr;
-                tree_node* lcurrp;
+                node* lcurr;
+                node* lcurrp;
                 lcurrp = curr->right;
                 lcurr = (curr->right)->left;
                 while(lcurr->left != NULL)
@@ -149,71 +174,57 @@ return;
                    lcurrp = lcurr;
                    lcurr = lcurr->left;
                 }
-curr->data = lcurr->data;
+		curr->data = lcurr->data;
                 delete lcurr;
                 lcurrp->left = NULL;
            }
            else
            {
-               tree_node* tmp;
+               node* tmp;
                tmp = curr->right;
                curr->data = tmp->data;
-   curr->right = tmp->right;
+	       curr->right = tmp->right;
                delete tmp;
            }
 
         }
-return;
+	return true;
     }
-     
+
+
+	}
 }
 
-bool BinarySearchTree::Search(int key)
+bool BinarySearchTree::Search(int val)
 {
-     std::cout << val << "Inside BST::Search()\n";
-     return search(key, root);
-}
-BinarySearchTree::search(int key, node *leaf)
-{
-  if(leaf!=NULL)
-  {
-    if(key==leaf->key_value)
-      return leaf;
-    if(key<leaf->key_value)
-      return search(key, leaf->left);
+     if(tree==NULL)
+		return false;
+     else 
+	{
+	node *temp;
+	temp=tree;
+	while(temp->data!=val || temp==NULL)
+	{
+	if(temp->data<val)
+		temp=temp->right;
+	else
+		temp=temp->left;
+	}
+    
+    if(temp->data=val)
+	return true;
     else
-      return search(key, leaf->right);
-  }
-  else return NULL;
+	return false;
+       }
 }
+
 
 void BinarySearchTree::ClearADT()
 {
-     std::cout <<"Inside BST::ClearADT()\n";
-ClearADT(root);
-}
-void BinarySearchTree::ClearADT(node *leaf)
-{
-  if(leaf!=NULL)
-  {
-    ClearADT(leaf->left);
-    ClearADT(leaf->right);
-    delete leaf;
-  }
+     delete tree;
 }
  
 void BinarySearchTree::Display()
 {
-     std::cout <<"Inside BST::Display()\n";
-inorder(root);
-}
-void BinarySearchTree::inorder(tree_node* p)
-{
-    if(p != NULL)
-    {
-        if(p->left) inorder(p->left);
-        cout<<" "<<p->data<<" ";
-        if(p->right) inorder(p->right);
-    }
-    else return;
+     inorder(tree);
 }
